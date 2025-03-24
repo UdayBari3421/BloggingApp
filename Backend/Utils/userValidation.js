@@ -9,4 +9,4 @@ export const nameValid = (name) => validator.isAlpha(name) && validator.isLength
 
 export const genderValid = (gender) => validator.isIn(gender, ["MALE", "FEMALE", "OTHER"]);
 
-export const createToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET);
+export const createToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1Year" });

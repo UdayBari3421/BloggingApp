@@ -1,8 +1,9 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config.js";
-import userRouter from "./Routes/useraRoutes.js";
+import userRouter from "./Routes/userRoutes.js";
 import { connectDb } from "./Config/connection.js";
+import blogRouter from "./Routes/BlogRoutes.js";
 
 connectDb();
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRouter);
+app.use("/api/blog", blogRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

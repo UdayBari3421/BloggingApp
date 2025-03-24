@@ -1,29 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../Models/User.model.js";
 import { emailValid, passwordValid, nameValid, genderValid, createToken } from "../Utils/userValidation.js";
-
-export const loginController = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "User does not exist", success: false });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid Password", success: false });
-    }
-
-    const token = createToken(user._id);
-
-    return res.status(200).json({ message: "Login Successful", success: true, data: user, token });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: error.message, success: false });
-  }
-};
+import Token from "../Models/Token.model.js";
 
 export const registerConroller = async (req, res) => {
   try {
@@ -56,5 +34,44 @@ export const registerConroller = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message, success: false });
+  }
+};
+
+export const loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist", success: false });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid Password", success: false });
+    }
+
+    const token = createToken(user._id);
+    await stroreToken(user, token, res);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const stroreToken = async (user, token, res) => {
+  try {
+    const existing = await Token.findOneAndDelete({ userId: user._id });
+
+    if (!existing) {
+      await Token.create(
+        new Token({
+          userId: user._id,
+          token,
+        })
+      );
+    }
+
+    return res.status(200).json({ message: "Login Successful", success: true, token });
+  } catch (error) {
+    console.log(error);
+    return res.status(200).json({ message: error.message, success: false });
   }
 };
