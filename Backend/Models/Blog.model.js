@@ -20,6 +20,20 @@ const blogSchema = new Schema(
       required: true,
       default: "General",
     },
+    comments: [
+      {
+        userId: {
+          type: Schema.Types.ObjectId,
+          required: true,
+          ref: "User",
+        },
+        text: String,
+        date: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
