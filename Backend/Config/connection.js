@@ -14,6 +14,8 @@ export const connectDb = async () => {
     if (retries < Number(process.env.DB_RETRIES)) {
       console.log(`Retrying to connect to MongoDB: ${retries}`);
       setTimeout(connectDb, 5000);
+    } else {
+      console.log("Failed to connect to MongoDB. Exiting...");
     }
   }
 };
