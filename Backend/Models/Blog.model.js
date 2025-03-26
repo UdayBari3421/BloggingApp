@@ -28,7 +28,7 @@ const blogSchema = new Schema(
           ref: "User",
         },
         text: String,
-        date: {
+        createdAt: {
           type: Date,
           default: Date.now,
         },
