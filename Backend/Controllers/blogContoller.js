@@ -28,6 +28,7 @@ export const createBlog = async (req, res) => {
 };
 
 export const getAllBlogs = async (req, res) => {
+  console.log(req.body);
   try {
     const blogs = await Blog.find({}, "title content genre userId createdAt");
     if (!blogs.length) {
@@ -48,6 +49,34 @@ export const getAllBlogs = async (req, res) => {
     }));
 
     return res.status(200).json({ message: "Blogs fetched successfully", success: true, data: blogResponse });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error", success: false, error: error });
+  }
+};
+
+export const addComment = async (req, res) => {
+  console.log(req.body);
+  const { blogId } = req.params;
+  const { userId, text } = req.body;
+
+  if (!blogId) {
+    return res.status(400).json({ message: "blogId is required please provide a valid blogId", success: false });
+  }
+
+  if (!text) {
+    return res.status(400).json({ message: "Comment text is required", success: false });
+  }
+
+  try {
+    const blog = await Blog.findById(blogId);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found", success: false });
+    }
+
+    blog.comments.unshift({ userId, text });
+    await blog.save();
+
+    return res.status(201).json({ message: "Comment added successfully", success: true, data: blog.comments });
   } catch (error) {
     return res.status(500).json({ message: "Server Error", success: false, error: error });
   }
