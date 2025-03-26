@@ -32,6 +32,20 @@ const blogSchema = new Schema(
           type: Date,
           default: Date.now,
         },
+        replies: [
+          {
+            userId: {
+              type: Schema.Types.ObjectId,
+              required: true,
+              ref: "User",
+            },
+            text: String,
+            createdAt: {
+              type: Date,
+              default: Date.now,
+            },
+          },
+        ],
       },
     ],
   },
