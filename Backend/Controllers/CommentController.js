@@ -61,3 +61,27 @@ export const getComments = async (req, res) => {
     return res.status(500).json({ message: "Server Error", success: false, error: error });
   }
 };
+
+export const deleteComment = async (req, res) => {
+  const { commentId, userId } = req.body;
+  try {
+    const comment = await Comment.findById(commentId);
+    console.log(comment);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found", success: false });
+    }
+    if (comment.userId.toString() !== userId) {
+      return res.status(401).json({ message: "You are not authorized to delete this comment", success: false });
+    }
+
+    const deletedComment = await Comment.findByIdAndDelete(commentId);
+
+    if (!deletedComment) {
+      return res.status(400).json({ message: "Failed to delete comment", success: false });
+    }
+
+    return res.status(200).json({ message: "Comment deleted successfully", success: true });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error", success: false, error: error });
+  }
+};
