@@ -41,7 +41,6 @@ const Signup = () => {
       if (validateFormData(formData)) {
         const response = await axios.post(backendUrl + "/api/user/register", formData);
         if (response.data.success) {
-          console.log(response.data);
           toast.success(response.data.message);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("user", JSON.stringify(response.data.user));

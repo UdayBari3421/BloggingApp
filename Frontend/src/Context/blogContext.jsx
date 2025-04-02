@@ -29,7 +29,6 @@ export const BlogProvider = ({ children }) => {
 
   const setUserFunction = (user) => {
     dispatch(setUser(user));
-    console.log(user);
   };
 
   const setTokenFunction = (token) => {

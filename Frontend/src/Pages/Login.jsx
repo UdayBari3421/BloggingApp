@@ -34,9 +34,7 @@ const Login = () => {
       e.preventDefault();
       if (validateFormData(formData)) {
         const response = await axios.post(backendUrl + "/api/user/login", formData);
-        console.log(response.data);
         if (response.data.success) {
-          console.log(response.data);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("user", JSON.stringify(response.data.user));
           setTokenFunction(response.data.token);

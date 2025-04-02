@@ -1,5 +1,6 @@
 import axios from "axios";
 import Logo from "../assets/logo.png";
+import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { BlogContext } from "../Context/blogContext";
@@ -13,9 +14,17 @@ const Navbar = () => {
     setTokenFunction(null);
     setUserFunction(null);
 
-    // try {
-    //   const res = await axios.delete(backendUrl + "/api/user/logout");
-    // } catch (error) {}
+    try {
+      const res = await axios.delete(backendUrl + "/api/user/logout");
+      if (res.data.success || res.status === 200) {
+        toast.success(res.data.message);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred");
+    }
   };
 
   return (
