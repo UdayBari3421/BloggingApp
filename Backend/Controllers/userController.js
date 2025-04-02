@@ -3,7 +3,7 @@ import User from "../Models/User.model.js";
 import { emailValid, passwordValid, nameValid, genderValid, createToken } from "../Utils/userValidation.js";
 import Token from "../Models/Token.model.js";
 
-export const registerConroller = async (req, res) => {
+export const registerController = async (req, res) => {
   try {
     const { name, email, password, gender } = req.body;
 
@@ -29,6 +29,7 @@ export const registerConroller = async (req, res) => {
     const user = await newUser.save();
 
     const token = createToken(user._id);
+    await stroreToken(user, token, res);
 
     return res.status(200).json({ message: "User Created Successfully", success: true, data: user, token });
   } catch (error) {
@@ -56,6 +57,17 @@ export const loginController = async (req, res) => {
   }
 };
 
+export const logoutController = async (req, res) => {
+  try {
+    const { user } = req;
+    await Token.findOneAndDelete({ userId: user._id });
+    return res.status(200).json({ message: "Logout Successful", success: true });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error.message, success: false });
+  }
+};
+
 const stroreToken = async (user, token, res) => {
   try {
     const existing = await Token.findOneAndDelete({ userId: user._id });
@@ -69,7 +81,7 @@ const stroreToken = async (user, token, res) => {
       );
     }
 
-    return res.status(200).json({ message: "Login Successful", success: true, token });
+    return res.status(200).json({ message: "Login Successful", success: true, token, user });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: error.message, success: false });
