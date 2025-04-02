@@ -12,7 +12,7 @@ const Signup = () => {
     gender: "",
   });
 
-  const { backendUrl, setToken, navigate, token } = useContext(BlogContext);
+  const { backendUrl, setTokenFunction, navigate, token, setUserFunction } = useContext(BlogContext);
 
   const validateFormData = (data) => {
     let regexEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
@@ -38,16 +38,17 @@ const Signup = () => {
     e.preventDefault();
 
     try {
-      console.log(formData);
       if (validateFormData(formData)) {
         const response = await axios.post(backendUrl + "/api/user/register", formData);
         if (response.data.success) {
+          console.log(response.data);
           toast.success(response.data.message);
           localStorage.setItem("token", response.data.token);
-          localStorage.setItem("user", response.data.user);
-          setToken(response.data.token);
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+          setTokenFunction(response.data.token);
           setUserFunction(response.data.user);
           setErrors("");
+          navigate("/");
         } else {
           setErrors(response.data.message);
         }
@@ -99,7 +100,7 @@ const Signup = () => {
             </span>
           </div>
         </div>
-        <button className="cursor-pointer bg-black text-white p-3 w-full mt-4 rounded">Login</button>
+        <button className="cursor-pointer bg-black text-white p-3 w-full mt-4 rounded">Sign Up</button>
       </form>
     </div>
   );

@@ -5,10 +5,13 @@ import { useContext } from "react";
 import { BlogContext } from "../Context/blogContext";
 
 const Navbar = () => {
-  const { token, backendUrl } = useContext(BlogContext);
+  const { token, backendUrl, setTokenFunction, setUserFunction } = useContext(BlogContext);
 
   const handleLogout = async () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setTokenFunction(null);
+    setUserFunction(null);
 
     // try {
     //   const res = await axios.delete(backendUrl + "/api/user/logout");

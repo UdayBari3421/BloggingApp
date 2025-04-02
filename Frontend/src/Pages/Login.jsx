@@ -2,7 +2,6 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { BlogContext } from "../Context/blogContext";
-import { setUser } from "../States/UserSlice";
 
 const Login = () => {
   const [errors, setErrors] = useState("");
@@ -11,7 +10,7 @@ const Login = () => {
     password: "",
   });
 
-  const { backendUrl, setToken, navigate, token } = useContext(BlogContext);
+  const { backendUrl, setTokenFunction, navigate, token, state_user, setUserFunction } = useContext(BlogContext);
 
   const validateFormData = (data) => {
     if (!data.email) {
@@ -37,16 +36,21 @@ const Login = () => {
         const response = await axios.post(backendUrl + "/api/user/login", formData);
         console.log(response.data);
         if (response.data.success) {
+          console.log(response.data);
           localStorage.setItem("token", response.data.token);
-          localStorage.setItem("user", response.data.user);
-          setToken(response.data.token);
-          setUser(response.data.user);
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+          setTokenFunction(response.data.token);
+          setUserFunction(response.data.user);
           toast.success("Logged in successfully");
+          navigate("/");
+        } else if (response.data.message) {
+          setErrors(response.data.message);
         }
       } else {
         toast.error("Form validation failed");
       }
     } catch (error) {
+      console.log(error);
       setErrors([error.message]);
     }
   };
@@ -57,7 +61,7 @@ const Login = () => {
     if (token && user) {
       navigate("/");
     }
-  }, [token]);
+  }, [token, state_user]);
 
   return (
     <div className="w-full h-[100vh] absolute -z-50 top-0 flex justify-center items-center flex-col">

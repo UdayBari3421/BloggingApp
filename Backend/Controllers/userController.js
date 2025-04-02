@@ -81,7 +81,19 @@ const stroreToken = async (user, token, res) => {
       );
     }
 
-    return res.status(200).json({ message: "Login Successful", success: true, token, user });
+    return res.status(200).json({
+      message: "Login Successful",
+      success: true,
+      token,
+      user: {
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        email: user.email,
+        _id: user._id,
+        gender: user.gender,
+        name: user.name,
+      },
+    });
   } catch (error) {
     console.log(error);
     return res.status(200).json({ message: error.message, success: false });

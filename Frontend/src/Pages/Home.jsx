@@ -2,8 +2,8 @@ import { useContext, useEffect } from "react";
 import { BlogContext } from "../Context/blogContext";
 
 const Home = () => {
-  const { token } = useContext(BlogContext);
+  const { token, blogs } = useContext(BlogContext);
 
-  return <div>Home</div>;
+  return <div></div>;
 };
 export default Home;
