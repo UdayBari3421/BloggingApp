@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
-app.use("/api/comments", commentRouter);
+app.use("/api/comment", commentRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

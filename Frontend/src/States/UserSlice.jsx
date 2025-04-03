@@ -8,6 +8,7 @@ const userReducer = createSlice({
     isAuthenticated: null,
     loading: false,
     status: "Hero",
+    isLoggedIn: false,
   },
 
   reducers: {

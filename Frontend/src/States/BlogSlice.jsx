@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const blogSlice = createSlice({
-  name: "blog",
+  name: "blogs",
   initialState: {
     blogs: [],
     loading: false,
     error: "",
+    comments: [],
   },
 
   reducers: {
@@ -21,8 +22,11 @@ const blogSlice = createSlice({
     deleteBlog: (state, action) => {
       state.blogs = state.blogs.filter((blog) => blog._id !== action.payload);
     },
+    setComments: (state, action) => {
+      state.comments = action.payload;
+    },
   },
 });
 
-export const { setBlogs, setBlogLoading, setBlogError, deleteBlog } = blogSlice.actions;
+export const { setBlogs, setBlogLoading, setBlogError, deleteBlog, setComments } = blogSlice.actions;
 export default blogSlice.reducer;

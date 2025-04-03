@@ -28,7 +28,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex justify-between items-center py-4 px-8">
+    <nav className="border-b-2 border-gray-200 flex justify-between items-center py-4 px-8">
       <div className="flex items-center justify-center gap-2 text-xl font-bold">
         <img src={Logo} className="w-[50px] h-[50px]" />
         <h1 className="boldonse">BlogApp</h1>
@@ -49,7 +49,7 @@ const Navbar = () => {
           </NavLink>
         </div>
       )}
-    </div>
+    </nav>
   );
 };
 export default Navbar;

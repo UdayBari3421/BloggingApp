@@ -48,8 +48,8 @@ export const getAllBlogs = async (req, res) => {
       authorName: userMap[blog.userId] || "Unknown",
     }));
 
-    return res.status(200).json({ message: "Blogs fetched successfully", success: true, data: blogResponse });
+    return res.status(200).json({ message: "Blogs fetched successfully", success: true, blogs: blogResponse });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error", success: false, error: error });
+    return res.status(500).json({ message: "Server Error", success: false, error: error.message });
   }
 };

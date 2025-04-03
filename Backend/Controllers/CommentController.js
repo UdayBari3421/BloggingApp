@@ -4,6 +4,13 @@ import Comment from "../Models/Comment.model.js";
 export const addComment = async (req, res) => {
   const { userId, comment, parentId } = req.body;
 
+  if (!userId) {
+    return res.status(400).json({
+      message: "Invalid User, please login again",
+      success: false,
+    });
+  }
+
   if (!parentId) {
     return res.status(400).json({ message: "Parent Id is required", success: false });
   }
@@ -38,12 +45,12 @@ export const addComment = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error", success: false, error: error });
+    return res.status(500).json({ message: "Server Error", success: false, error: error.message });
   }
 };
 
 export const getComments = async (req, res) => {
-  const { parentId } = req.body;
+  const { parentId } = req.query;
 
   if (!parentId) {
     return res.status(400).json({ message: "Parent Id is required", success: false });
@@ -58,7 +65,7 @@ export const getComments = async (req, res) => {
 
     return res.status(200).json({ message: "Comments fetched successfully", success: true, data: comments });
   } catch (error) {
-    return res.status(500).json({ message: "Server Error", success: false, error: error });
+    return res.status(500).json({ message: "Server Error", success: false, error: error.message });
   }
 };
 
