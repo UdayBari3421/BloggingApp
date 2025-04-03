@@ -5,10 +5,9 @@ const userReducer = createSlice({
   initialState: {
     user: null,
     token: localStorage.getItem("token"),
-    isAuthenticated: null,
+    isLoggedIn: !!localStorage.getItem("token"),
     loading: false,
     status: "Hero",
-    isLoggedIn: false,
   },
 
   reducers: {
@@ -18,8 +17,8 @@ const userReducer = createSlice({
     setToken: (state, action) => {
       state.token = action.payload;
     },
-    setIsAuthenticated: (state, action) => {
-      state.isAuthenticated = action.payload;
+    setIsLoggedIn: (state, action) => {
+      state.isLoggedIn = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -30,5 +29,5 @@ const userReducer = createSlice({
   },
 });
 
-export const { setUser, setToken, setIsAuthenticated, setLoading, setStatus } = userReducer.actions;
+export const { setUser, setToken, setIsLoggedIn, setLoading, setStatus } = userReducer.actions;
 export default userReducer.reducer;

@@ -1,7 +1,7 @@
 import { createContext, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setUser, setToken } from "../States/UserSlice";
+import { setUser, setToken, setIsLoggedIn } from "../States/UserSlice";
 import { setBlogs, setBlogError, deleteBlog, setComments } from "../States/BlogSlice";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -17,6 +17,14 @@ export const BlogProvider = ({ children }) => {
   const blogs = useSelector((state) => state.blog.blogs);
   const comments = useSelector((state) => state.blog.comments);
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+  useEffect(() => {
+    if (localStorage.getItem("token") && localStorage.getItem("user")) {
+      dispatch(setIsLoggedIn(true));
+    } else {
+      dispatch(setIsLoggedIn(false));
+    }
+  }, [dispatch]);
 
   const fetchBlogs = async () => {
     try {
@@ -85,10 +93,20 @@ export const BlogProvider = ({ children }) => {
 
   const setUserFunction = (user) => {
     dispatch(setUser(user));
+    if (user) {
+      dispatch(setIsLoggedIn(true));
+    } else {
+      dispatch(setIsLoggedIn(false));
+    }
   };
 
   const setTokenFunction = (token) => {
     dispatch(setToken(token));
+    if (token) {
+      dispatch(setIsLoggedIn(true));
+    } else {
+      dispatch(setIsLoggedIn(false));
+    }
   };
 
   const setBlogsFunction = (blogs) => {
@@ -111,6 +129,7 @@ export const BlogProvider = ({ children }) => {
     token,
     blogs,
     comments,
+    isLoggedIn,
     createCommentFunction,
     navigate,
     state_user,

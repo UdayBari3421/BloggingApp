@@ -4,15 +4,19 @@ import { toast } from "react-toastify";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { BlogContext } from "../Context/blogContext";
+import { useDispatch } from "react-redux";
+import { setIsLoggedIn } from "../States/UserSlice";
 
 const Navbar = () => {
   const { token, backendUrl, setTokenFunction, setUserFunction } = useContext(BlogContext);
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setTokenFunction(null);
     setUserFunction(null);
+    dispatch(setIsLoggedIn(false));
 
     try {
       const res = await axios.delete(backendUrl + "/api/user/logout");
