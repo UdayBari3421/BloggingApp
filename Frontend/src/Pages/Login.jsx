@@ -1,100 +1,92 @@
+import { useState } from "react";
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { BlogContext } from "../Context/blogContext";
+import { Button } from "../Components";
+import { userSelector } from "../Store/Selectors";
+import { backendURL } from "../Store/constants.js";
+import { useDispatch } from "react-redux";
+import { setError, setLoading, setUser } from "../Store/UserSlice";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [errors, setErrors] = useState("");
+  const { error, isLoading } = userSelector();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [loginError, setLoginError] = useState(null);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const { backendUrl, setTokenFunction, navigate, token, state_user, setUserFunction } = useContext(BlogContext);
-
-  const validateFormData = (data) => {
-    if (!data.email) {
-      if (!errors.includes("Email is required")) {
-        setErrors("Email is required");
-      }
-      return;
-    } else if (!data.password || data.password.length < 6) {
-      if (!errors.includes("Password should be atleast 6 characters long")) {
-        setErrors("Password should be atleast 6 characters long");
-      }
-      return;
-    }
-
-    setErrors([]);
-    return true;
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLoginForm = async (e) => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      e.preventDefault();
-      if (validateFormData(formData)) {
-        const response = await axios.post(backendUrl + "/api/user/login", formData);
-        if (response.data.success) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("user", JSON.stringify(response.data.user));
-          setTokenFunction(response.data.token);
-          setUserFunction(response.data.user);
-          toast.success("Logged in successfully");
-          navigate("/");
-        } else if (response.data.message) {
-          setErrors(response.data.message);
-        }
-      } else {
-        toast.error("Form validation failed");
+      dispatch(setLoading(true));
+      const response = await axios.post(`${backendURL}/api/user/login`, formData);
+      if (response.data.success) {
+        const userData = {
+          user: response.data.user,
+          token: response.data.token,
+          isAuthenticated: true,
+        };
+        dispatch(setUser(userData));
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        setLoginError(null);
+        navigate("/");
       }
     } catch (error) {
-      console.log(error);
-      setErrors([error.message]);
+      setLoginError(error.response?.data?.message || "Login failed");
+      dispatch(setError(error.response?.data?.message || "Login failed"));
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const user = localStorage.getItem("user");
-    if (token && user) {
-      navigate("/");
-    }
-  }, [token, state_user]);
-
   return (
-    <div className="w-full h-[100vh] absolute -z-50 top-0 flex justify-center items-center flex-col">
-      <form onSubmit={handleLoginForm} className="outline outline-[#cbcbcb] rounded-xl shadow-2xl px-8 py-8 w-4/12">
-        <h1 className="p-4 text-3xl text-center font-bold rounded-xl">Login</h1>
-        {errors && <div className="text-center mb-4 text-red-500 p-2 rounded">{errors}</div>}
-        <hr className="w-full mb-8 border-t-0 text-white border-b border-gray-400" />
+    <div className="m-auto min-h-[90vh] flex justify-center items-center">
+      <form
+        onSubmit={handleLogin}
+        className="min-w-[350px] border-gray-300 shadow-2xl p-8 border rounded-2xl flex flex-col justify-between gap-4 w-4/12">
+        <h1 className="text-3xl pb-2 font-bold text-center">Login</h1>
+        <hr className="border-gray-300 mb-4 border-b" />
+        {(error || loginError) && <p className="text-red-500 text-center">{error || loginError}</p>}
         <input
           type="email"
+          name="email"
           value={formData.email}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              email: e.target.value,
-            })
-          }
-          className="outline rounded mb-4 p-2 w-full"
+          onChange={handleChange}
           placeholder="Email"
+          className="border border-gray-300 p-2 rounded"
         />
         <input
           type="password"
+          name="password"
           value={formData.password}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              password: e.target.value,
-            })
-          }
-          className="outline rounded my-2 p-2 w-full"
+          onChange={handleChange}
           placeholder="Password"
+          className="border border-gray-300 p-2 rounded"
         />
-
-        <button type="submit" className="cursor-pointer bg-black text-white p-3 w-full mt-4 rounded">
-          Login
-        </button>
+        <Button
+          disabled={isLoading}
+          type="submit"
+          styles={
+            "disabled:cursor-not-allowed disabled:hover:text-white disabled:bg-gray-400 bg-black text-white px-8 py-1.5 rounded hover:outline hover:bg-white hover:text-black"
+          }
+          text={`${isLoading ? "Loading..." : "Login"} `}>
+          {isLoading ? (
+            <div className="flex font-bold items-center justify-center gap-2">
+              <span className="animate-spin rounded-full h-[10px] p-2 aspect-square w-[10px] border-4 border-l-blue-500 border-gray-600"></span>
+              Loading...
+            </div>
+          ) : (
+            "Login"
+          )}
+        </Button>
       </form>
     </div>
   );

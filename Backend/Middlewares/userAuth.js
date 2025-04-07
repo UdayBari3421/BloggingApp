@@ -16,9 +16,8 @@ const authUser = async (req, res, next) => {
       return res.status(401).json({ success: false, message: "Invalid user! please login again" });
     }
   } catch (error) {
-    console.log(error);
     if (error instanceof TokenExpiredError) {
-      console.log("Token Expired");
+      return res.status(401).json({ success: false, message: "Token expired! Please login again" });
     }
     return res.status(401).json({ success: false, message: "Login Expired! Please login again" });
   }

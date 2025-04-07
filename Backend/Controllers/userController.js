@@ -1,6 +1,12 @@
 import bcrypt from "bcrypt";
 import User from "../Models/User.model.js";
-import { emailValid, passwordValid, nameValid, genderValid, createToken } from "../Utils/userValidation.js";
+import {
+  emailValid,
+  passwordValid,
+  nameValid,
+  genderValid,
+  createToken,
+} from "../Utils/userValidation.js";
 import Token from "../Models/Token.model.js";
 
 export const registerController = async (req, res) => {
@@ -31,9 +37,10 @@ export const registerController = async (req, res) => {
     const token = createToken(user._id);
     await stroreToken(user, token, res);
 
-    return res.status(200).json({ message: "User Created Successfully", success: true, data: user, token });
+    return res
+      .status(200)
+      .json({ message: "User Created Successfully", success: true, data: user, token });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: error.message, success: false });
   }
 };
@@ -53,17 +60,16 @@ export const loginController = async (req, res) => {
     const token = createToken(user._id);
     await stroreToken(user, token, res);
   } catch (error) {
-    console.log(error);
+    return res.status(500).json({ message: error.message, success: false });
   }
 };
 
 export const logoutController = async (req, res) => {
   try {
-    const { user } = req;
-    await Token.findOneAndDelete({ userId: user._id });
+    const { userId } = req.body;
+    await Token.findOneAndDelete({ userId });
     return res.status(200).json({ message: "Logout Successful", success: true });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ message: error.message, success: false });
   }
 };
@@ -95,7 +101,6 @@ const stroreToken = async (user, token, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
     return res.status(200).json({ message: error.message, success: false });
   }
 };

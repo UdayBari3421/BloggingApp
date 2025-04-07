@@ -1,17 +1,16 @@
 import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
 import "./index.css";
 import App from "./App.jsx";
+import store from "./Store/Store.js";
 import { BrowserRouter } from "react-router-dom";
-import { Provider } from "react-redux";
-import store from "./States/Store.js";
-import { BlogProvider } from "./Context/blogContext";
+import { ToastContainer } from "react-toastify";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
+    <ToastContainer />
     <BrowserRouter>
-      <BlogProvider>
-        <App />
-      </BlogProvider>
+      <App />
     </BrowserRouter>
   </Provider>
 );

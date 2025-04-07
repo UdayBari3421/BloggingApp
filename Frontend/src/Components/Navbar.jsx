@@ -1,57 +1,105 @@
+import { NavLink, useNavigate } from "react-router-dom";
+import { Button, Sidebar } from "./index.js";
+import Logo from "../assets/LOGO.png";
+import { userSelector } from "../Store/Selectors.js";
 import axios from "axios";
-import Logo from "../assets/logo.png";
-import { toast } from "react-toastify";
-import { NavLink } from "react-router-dom";
-import { useContext } from "react";
-import { BlogContext } from "../Context/blogContext";
-import { useDispatch } from "react-redux";
-import { setIsLoggedIn } from "../States/UserSlice";
+import { backendURL } from "../Store/constants.js";
+import { useEffect, useState } from "react";
+import { HiMenu } from "react-icons/hi";
 
 const Navbar = () => {
-  const { token, backendUrl, setTokenFunction, setUserFunction } = useContext(BlogContext);
-  const dispatch = useDispatch();
+  const user = userSelector();
+  const { isAuthenticated, token } = user;
+  const navigate = useNavigate();
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token]);
 
   const handleLogout = async () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setTokenFunction(null);
-    setUserFunction(null);
-    dispatch(setIsLoggedIn(false));
-
     try {
-      const res = await axios.delete(backendUrl + "/api/user/logout");
-      if (res.data.success || res.status === 200) {
-        toast.success(res.data.message);
-      } else {
-        toast.error(res.data.message);
+      const response = axios.delete(backendURL + "/api/user/logout", { token });
+      if (response.data.success) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
       }
     } catch (error) {
       console.log(error);
-      toast.error("An error occurred");
     }
   };
 
   return (
-    <nav className="border-b-2 border-gray-200 flex justify-between items-center py-4 px-8">
-      <div className="flex items-center justify-center gap-2 text-xl font-bold">
-        <img src={Logo} className="w-[50px] h-[50px]" />
-        <h1 className="boldonse">BlogApp</h1>
-      </div>
-      {token ? (
+    <nav className="sticky top-0 left-0 right-0 bg-white flex justify-between items-center p-4 border-b-2 border-gray-200">
+      <NavLink to="/">
+        <div className="flex gap-2 items-center">
+          <img
+            className="w-[50px]"
+            src={Logo}
+          />
+          <h1 className="boldonse text-xl font-bold">BlogApp</h1>
+        </div>
+      </NavLink>
+      {!isAuthenticated ? (
         <div className="flex gap-4">
-          <button onClick={handleLogout} className="cursor-pointer bg-black text-white transition duration-150 hover:bg-white hover:outline-2 hover:text-black px-8 py-2 rounded-full">
-            Logout
-          </button>
+          <NavLink to="/login">
+            <Button
+              styles={
+                "bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+              }
+              text="Login"
+            />
+          </NavLink>
+          <NavLink to="/signup">
+            <Button
+              styles={
+                "bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+              }
+              text="Signup"
+            />
+          </NavLink>
         </div>
       ) : (
-        <div className="flex gap-4">
-          <NavLink to="/login" className="bg-black text-white transition duration-150 hover:bg-white hover:outline-2 hover:text-black px-8 py-2 rounded-full">
-            Login
-          </NavLink>
-          <NavLink to="/signup" className="text-black outline outline-black transition duration-150 hover:bg-black hover:text-white px-8 py-2 rounded-full">
-            Signup
-          </NavLink>
-        </div>
+        <>
+          <div className="md:flex gap-4 hidden">
+            <Button
+              onClickHandler={handleLogout}
+              styles={
+                "bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+              }
+              text="Logout"
+            />
+
+            <NavLink to="/createblog">
+              <Button
+                styles={
+                  "bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+                }
+                text="Create Blog"
+              />
+            </NavLink>
+          </div>
+
+          <div className="md:hidden flex gap-4">
+            <Button className="text-3xl">
+              <HiMenu
+                className="text-3xl"
+                onClick={() => setVisible((prev) => !prev)}
+              />
+            </Button>
+
+            {visible && (
+              <Sidebar
+                visible={visible}
+                setVisible={setVisible}
+                handleLogout={handleLogout}
+              />
+            )}
+          </div>
+        </>
       )}
     </nav>
   );
