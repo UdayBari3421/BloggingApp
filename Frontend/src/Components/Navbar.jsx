@@ -6,9 +6,12 @@ import axios from "axios";
 import { backendURL } from "../Store/constants.js";
 import { useEffect, useState } from "react";
 import { HiMenu } from "react-icons/hi";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../Store/UserSlice.jsx";
 
 const Navbar = () => {
   const user = userSelector();
+  const dispatch = useDispatch();
   const { isAuthenticated, token } = user;
   const navigate = useNavigate();
   const [visible, setVisible] = useState(false);
@@ -21,10 +24,17 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = axios.delete(backendURL + "/api/user/logout", { token });
+      console.log("TRYING TO LOGOUT");
+      const response = await axios.delete(
+        backendURL + "/api/user/logout",
+        { userId: user.userId },
+        { headers: { token } }
+      );
+      console.log(response.data);
       if (response.data.success) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        dispatch(clearUser());
         navigate("/login");
       }
     } catch (error) {

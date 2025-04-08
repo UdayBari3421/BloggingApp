@@ -1,11 +1,11 @@
 import React from "react";
 
-const Button = ({ onClick, styles, type = "button", disabled = false, text, children }) => {
+const Button = ({ onClickHandler, styles, type = "button", disabled = false, text, children }) => {
   return (
     <button
       type={type}
       disabled={disabled}
-      onClick={onClick}
+      onClick={onClickHandler}
       className={`${styles} cursor-pointer`}>
       {children || text}
     </button>

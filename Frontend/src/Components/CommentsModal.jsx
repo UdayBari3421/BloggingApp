@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlineClose } from "react-icons/md";
-import { backendURL } from "../Store/constants";
+import { backendURL, getTimeAgo } from "../Store/constants";
 import {
   setComments,
   setError,
@@ -10,12 +10,37 @@ import {
 } from "../Store/CommentSlice";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { commentsSelector } from "../Store/Selectors";
+import { commentsSelector, userSelector } from "../Store/Selectors";
 import CommentPagination from "./CommentPagination";
+import { IoSendSharp } from "react-icons/io5";
 
 const CommentsModal = ({ parentId, closeModal }) => {
   const dispatch = useDispatch();
   const { comments, pagination, loading, error } = commentsSelector(parentId);
+  const [value, setValue] = useState("");
+  const { token } = userSelector();
+
+  const handleAddComment = async () => {
+    try {
+      const response = await axios.post(
+        backendURL + "/api/comment/add",
+        {
+          parentId,
+          comment: value,
+        },
+        { headers: { token } }
+      );
+
+      if (response.data.success) {
+        dispatch(setComments({ parentId, comments: [response.data.comment] }));
+        setValue("");
+        fetchComments(1);
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(setError(error.response?.data?.message || "Failed to add comment"));
+    }
+  };
 
   const fetchComments = async (page = 1) => {
     dispatch(setLoading(true));
@@ -108,6 +133,29 @@ const CommentsModal = ({ parentId, closeModal }) => {
         <p className="font-semibold text-gray-400">
           {pagination?.total || 0} Comments for this post
         </p>
+        <label
+          htmlFor="addcomment"
+          className="flex items-center justify-between border border-gray-300 rounded-lg px-4 py-2 mt-4 mb-2">
+          <input
+            id="addcomment"
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleAddComment();
+                setValue("");
+              }
+            }}
+            className="w-full outline-none border-none"
+            placeholder="Write a comment..."
+          />
+          <button
+            className="hover:text-blue-700"
+            onClick={handleAddComment}>
+            <IoSendSharp />
+          </button>
+        </label>
         <div>
           {loading ? (
             <div className="flex flex-col items-center justify-center py-8">
@@ -122,7 +170,7 @@ const CommentsModal = ({ parentId, closeModal }) => {
                     <div className="flex flex-col gap-2 border-b border-gray-200 py-4">
                       <span className="flex justify-between items-center">
                         <h1 className="text-sm font-semibold">{itm.authorName}</h1>
-                        <p className="text-xs text-gray-500">{itm.timestamp}</p>
+                        <p className="text-xs text-gray-500">{getTimeAgo(itm.timestamp)}</p>
                       </span>
                       <p className="text-sm text-gray-700">{itm.content}</p>
                     </div>
