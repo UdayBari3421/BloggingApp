@@ -4,9 +4,11 @@ import { Navbar } from "./Components";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "./Store/UserSlice";
+import { userSelector } from "./Store/Selectors";
 
 const App = () => {
   const dispatch = useDispatch();
+  const isLoggedIn = userSelector().isAuthenticated;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,14 +29,32 @@ const App = () => {
     }
   }, [dispatch]);
 
+  if (isLoggedIn) {
+    return (
+      <div className="w-full">
+        <Navbar />
+        <Routes>
+          <Route
+            path="/"
+            element={<Home />}
+          />
+          <Route
+            path="/genre/:genreId"
+            element={<Home />}
+          />
+          <Route
+            path="/createblog"
+            element={<CreateBlog />}
+          />
+        </Routes>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <Navbar />
       <Routes>
-        <Route
-          path="/"
-          element={<Home />}
-        />
         <Route
           path="/login"
           element={<Login />}
@@ -43,12 +63,6 @@ const App = () => {
           path="/signup"
           element={<Signup />}
         />
-        <Route />
-        <Route
-          path="/createblog"
-          element={<CreateBlog />}
-        />
-        <Route />
       </Routes>
     </div>
   );

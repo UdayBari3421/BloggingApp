@@ -3,10 +3,10 @@ import { Button } from "../Components";
 import { blogsSelector, userSelector } from "../Store/Selectors";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { backendURL } from "../Store/constants";
-import { pushBlog } from "../Store/BlogSlice";
+import { backendURL, genreOptions } from "../Store/constants";
+import { pushBlog, setError } from "../Store/BlogSlice";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const CreateBlog = () => {
   const dispatch = useDispatch();
@@ -20,14 +20,28 @@ const CreateBlog = () => {
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData.entries());
 
+      if (!data.title) {
+        setError("Title is required");
+        return;
+      } else if (!data.content) {
+        setError("Content is required");
+        return;
+      } else if (!data.genre) {
+        setError("Genre is required");
+        return;
+      }
+
       const response = await axios.post(backendURL + "/api/blog/create", data, {
         headers: { token },
       });
-      console.log("RES > DATA", response.data);
+
       if (response.data.success) {
         dispatch(pushBlog(response.data.blog));
         e.target.reset();
         toast.success("Blog created successfully");
+        navigate("/");
+      } else {
+        setError(response.data.message);
       }
     } catch (error) {
       if (error.response) {
@@ -35,8 +49,7 @@ const CreateBlog = () => {
       } else {
         toast.error("Something went wrong");
       }
-    } finally {
-      navigate("/");
+      navigate("/login");
     }
   };
 
@@ -44,6 +57,11 @@ const CreateBlog = () => {
     <div className="max-h-[90vh] h-[90vh] overflow-y-auto flex flex-col items-center justify-center p-4">
       <div className="min-w-[350px] w-6/12 shadow-2xl px-12 py-8 border border-gray-200 rounded-lg bg-white">
         <h1 className="text-2xl pb-3 font-bold text-center">Create New Blog</h1>
+        {error && (
+          <div className="flex justify-center items-center text-red-500 text-lg font-bold mt-4">
+            {error}
+          </div>
+        )}
         <hr className="border-gray-100 mb-6 border-b" />
         <form
           onSubmit={handleCreateBlog}
@@ -58,12 +76,18 @@ const CreateBlog = () => {
             placeholder="Content"
             name="content"
             className="border max-h-[100px] border-gray-300 rounded p-2 mb-4 w-full h-32"></textarea>
-          <input
-            type="text"
-            placeholder="Genre"
+          <select
             name="genre"
-            className="border border-gray-300 rounded p-2 mb-4 w-full"
-          />
+            className="border border-gray-300 rounded p-2 mb-4 w-full">
+            <option value="All">All</option>
+            {genreOptions.map((genre, index) => (
+              <option
+                value={genre.id}
+                key={index}>
+                {genre.title.toUpperCase()}
+              </option>
+            ))}
+          </select>
           <Button
             disabled={isLoading}
             type="submit"
@@ -80,6 +104,11 @@ const CreateBlog = () => {
               "Create Blog"
             )}
           </Button>
+          <Link
+            to="/"
+            className="text-blue-500 text-sm mt-4">
+            Back to Home
+          </Link>
         </form>
       </div>
     </div>

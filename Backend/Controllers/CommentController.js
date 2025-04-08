@@ -49,25 +49,57 @@ export const addComment = async (req, res) => {
   }
 };
 
-export const getComments = async (req, res) => {
-  const { parentId } = req.query;
+export const getAllComments = async (req, res) => {
+  const { parentId, page = 1, limit = 10 } = req.query;
 
   if (!parentId) {
-    return res.status(400).json({ message: "Parent Id is required", success: false });
+    return res.status(400).json({
+      message: "Parent Id is required",
+      success: false,
+    });
   }
 
   try {
+    const skip = (page - 1) * limit;
+
     const comments = await Comment.find({ parentId })
-      .sort({ creationDateAndTime: -1 })
-      .populate("userId");
+      .sort({ createdAt: -1 })
+      .populate("userId")
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Comment.countDocuments({ parentId });
 
     if (!comments.length) {
-      return res.status(404).json({ message: "No comments found", success: false });
+      return res.status(404).json({
+        message: "No comments found",
+        success: false,
+        comments: [],
+      });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Comments fetched successfully", success: true, data: comments });
+    const formattedComments = comments.map((item) => {
+      return {
+        _id: item._id,
+        userId: item.userId._id,
+        authorName: item.authorName,
+        comment: item.comment,
+        parentId: item.parentId,
+        createdAt: item.createdAt,
+      };
+    });
+
+    return res.status(200).json({
+      message: "Comments fetched successfully",
+      success: true,
+      comments: formattedComments,
+      pagination: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server Error", success: false, error: error.message });
   }
@@ -95,5 +127,28 @@ export const deleteComment = async (req, res) => {
     return res.status(200).json({ message: "Comment deleted successfully", success: true });
   } catch (error) {
     return res.status(500).json({ message: "Server Error", success: false, error: error });
+  }
+};
+
+export const getCommentCount = async (req, res) => {
+  const { parentId } = req.query;
+
+  if (!parentId) {
+    return res.status(400).json({
+      message: "Parent Id is required",
+      success: false,
+    });
+  }
+
+  try {
+    const count = await Comment.countDocuments({ parentId });
+
+    return res.status(200).json({
+      message: "Comment count fetched successfully",
+      success: true,
+      count,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error", success: false, error: error.message });
   }
 };
