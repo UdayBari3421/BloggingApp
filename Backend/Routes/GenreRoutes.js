@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { addGenre, getGenres } from "../Controllers/GenreController.js";
 import authUser from "../Middlewares/userAuth.js";
-import adminAuth from "../Middlewares/adminAuth.js";
 
 const router = Router();
 
