@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "../Components";
-import { blogsSelector, userSelector } from "../Store/Selectors";
+import { blogsSelector, genreSelector, userSelector } from "../Store/Selectors";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { backendURL, genreOptions } from "../Store/constants";
+import { backendURL } from "../Store/constants";
 import { pushBlog, setError } from "../Store/BlogSlice";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,6 +13,8 @@ const CreateBlog = () => {
   const navigate = useNavigate();
   const { isLoading, error } = blogsSelector();
   const { token } = userSelector();
+
+  const genreOptions = genreSelector().genre;
 
   const handleCreateBlog = async (e) => {
     e.preventDefault();
@@ -80,7 +82,7 @@ const CreateBlog = () => {
             name="genre"
             className="border border-gray-300 rounded p-2 mb-4 w-full">
             <option value="All">All</option>
-            {genreOptions.map((genre, index) => (
+            {genreOptions?.map((genre, index) => (
               <option
                 value={genre.id}
                 key={index}>

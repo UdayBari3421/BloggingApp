@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { commentsSelector, userSelector } from "../Store/Selectors";
 import CommentPagination from "./CommentPagination";
 import { IoSendSharp } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 const CommentsModal = ({ parentId, closeModal }) => {
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ const CommentsModal = ({ parentId, closeModal }) => {
       }
     } catch (error) {
       console.log(error);
+      toast.error(error.response?.data?.message || "Failed to add comment");
       dispatch(setError(error.response?.data?.message || "Failed to add comment"));
     }
   };

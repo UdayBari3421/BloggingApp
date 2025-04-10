@@ -5,6 +5,8 @@ import userRouter from "./Routes/UserRoutes.js";
 import { connectDb } from "./Config/connection.js";
 import blogRouter from "./Routes/BlogRoutes.js";
 import commentRouter from "./Routes/CommentRoutes.js";
+import genreRouter from "./Routes/GenreRoutes.js";
+import adminRouter from "./Routes/AdminRoutes.js";
 connectDb();
 
 const app = express();
@@ -16,6 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api/comment", commentRouter);
+app.use("/api/genre", genreRouter);
+app.use("/api/admin", adminRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

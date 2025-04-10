@@ -5,7 +5,7 @@ import Token from "../Models/Token.model.js";
 const authUser = async (req, res, next) => {
   const { token } = req.headers;
   if (!token) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    return res.status(401).json({ success: false, message: "Unauthorized User. Login Again!" });
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

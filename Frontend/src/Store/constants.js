@@ -21,16 +21,3 @@ export const getTimeAgo = (timestamp) => {
 
   return `${Math.floor(diffInMonths / 12)} yr ago`;
 };
-
-export const genreOptions = [
-  { id: "politics", title: "Politics" },
-  { id: "science", title: "Science" },
-  { id: "history", title: "History" },
-  { id: "technology", title: "Technology" },
-  { id: "art", title: "Art" },
-  { id: "literature", title: "Literature" },
-  { id: "sports", title: "Sports" },
-  { id: "music", title: "Music" },
-  { id: "travel", title: "Travel" },
-  { id: "food", title: "Food" },
-];

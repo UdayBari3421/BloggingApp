@@ -29,22 +29,20 @@ const Signup = () => {
       e.preventDefault();
       const response = await axios.post(`${backendURL}/api/user/register`, formData);
       dispatch(setLoading(true));
-      setTimeout(() => {
-        if (response.data.success) {
-          dispatch(
-            setUser({
-              user: response.data.user,
-              token: response.data.token,
-              isAuthenticated: true,
-            })
-          );
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("user", JSON.stringify(response.data.user));
-          setLoginError(null);
-          navigate("/");
-          dispatch(setLoading(false));
-        }
-      }, 2000);
+      if (response.data.success) {
+        dispatch(
+          setUser({
+            user: response.data.user,
+            token: response.data.token,
+            isAuthenticated: true,
+          })
+        );
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        setLoginError(null);
+        navigate("/");
+        dispatch(setLoading(false));
+      }
     } catch (error) {
       setLoginError(error.response?.data?.message || "Signup failed");
       console.error("Signup error:", error);
@@ -61,10 +59,10 @@ const Signup = () => {
         {(error || loginError) && <p className="text-red-500 text-center">{error || loginError}</p>}
         <input
           type="text"
-          name="Name"
+          name="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Email"
+          placeholder="Name"
           className="border border-gray-300 p-2 rounded"
         />
         <input
