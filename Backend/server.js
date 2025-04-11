@@ -19,7 +19,7 @@ app.use("/api/blog", blogRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/genre", genreRouter);
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.send("Hello World");
 });
 
