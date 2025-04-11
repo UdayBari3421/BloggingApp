@@ -9,6 +9,7 @@ import { connectDb } from "./config/connection.js";
 connectDb();
 
 const app = express();
+app.options("*", cors());
 
 const corsConfig = {
   origin: "*",
