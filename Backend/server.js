@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config.js";
 import userRouter from "./routes/UserRoutes.js";
-import { connectDb } from "./Config/connection.js";
+import { connectDb } from "./config/connection.js";
 import blogRouter from "./routes/BlogRoutes.js";
 import commentRouter from "./routes/CommentRoutes.js";
 import genreRouter from "./routes/GenreRoutes.js";
