@@ -1,6 +1,6 @@
-import Blog from "../Models/Blog.model.js";
-import User from "../Models/User.model.js";
-import validateBlog from "../Utils/blogValidation.js";
+import Blog from "../models/Blog.model.js";
+import User from "../models/User.model.js";
+import blogRouter from "../routes/BlogRoutes.js";
 
 export const createBlog = async (req, res) => {
   try {
@@ -10,7 +10,7 @@ export const createBlog = async (req, res) => {
 
     validateBlog(req.body);
 
-    const newBlog = new Blog({
+    const newBlog = new blogRouter({
       userId,
       title,
       content,

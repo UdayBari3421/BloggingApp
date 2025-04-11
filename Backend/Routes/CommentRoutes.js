@@ -1,11 +1,11 @@
 import { Router } from "express";
-import authUser from "../Middlewares/userAuth.js";
+import authUser from "../middlewares/userAuth.js";
 import {
   addComment,
   deleteComment,
   getAllComments,
   getCommentCount,
-} from "../Controllers/CommentController.js";
+} from "../controllers/CommentController.js";
 
 const router = Router();
 

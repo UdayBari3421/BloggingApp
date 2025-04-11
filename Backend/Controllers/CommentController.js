@@ -1,5 +1,5 @@
-import User from "../Models/User.model.js";
-import Comment from "../Models/Comment.model.js";
+import User from "../models/User.model.js";
+import Comment from "../models/Comment.model.js";
 
 export const addComment = async (req, res) => {
   const { userId, comment, parentId } = req.body;

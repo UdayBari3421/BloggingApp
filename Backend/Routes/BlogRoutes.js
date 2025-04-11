@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createBlog, getAllBlogs } from "../Controllers/blogContoller.js";
-import authUser from "../Middlewares/userAuth.js";
+import { createBlog, getAllBlogs } from "../controllers/blogContoller.js";
+import authUser from "../middlewares/userAuth.js";
 
 const blogRouter = Router();
 
