@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addGenre, getGenres } from "../controllers/GenreController.js";
+import { addGenre, getGenres } from "../controllers/genreController.js";
 import authUser from "../middlewares/userAuth.js";
 
 const router = Router();

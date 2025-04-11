@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import User from "../models/User.model.js";
+import User from "../models/userModel.js";
 import {
   emailValid,
   passwordValid,
@@ -7,7 +7,7 @@ import {
   genderValid,
   createToken,
 } from "../utils/userValidation.js";
-import Token from "../models/Token.model.js";
+import Token from "../models/tokenModel.js";
 
 export const registerController = async (req, res) => {
   try {

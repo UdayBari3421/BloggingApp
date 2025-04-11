@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 const { TokenExpiredError } = jwt;
-import Token from "../models/Token.model.js";
+import Token from "../models/tokenModel.js";
 
 const authUser = async (req, res, next) => {
   const { token } = req.headers;
