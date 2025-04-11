@@ -9,14 +9,6 @@ import { connectDb } from "./config/connection.js";
 connectDb();
 
 const app = express();
-app.options("*", cors());
-
-const corsConfig = {
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  Credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
 
 app.use(express.json());
 app.use(cors(corsConfig));
