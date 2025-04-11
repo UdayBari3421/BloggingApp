@@ -1,13 +1,13 @@
 import bcrypt from "bcrypt";
-import User from "../Models/User.model.js";
+import User from "../models/User.model.js";
 import {
   emailValid,
   passwordValid,
   nameValid,
   genderValid,
   createToken,
-} from "../Utils/userValidation.js";
-import Token from "../Models/Token.model.js";
+} from "../utils/userValidation.js";
+import Token from "../models/Token.model.js";
 
 export const registerController = async (req, res) => {
   try {
