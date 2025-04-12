@@ -18,10 +18,6 @@ const Login = () => {
     password: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -59,7 +55,7 @@ const Login = () => {
           type="email"
           name="email"
           value={formData.email}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           placeholder="Email"
           className="border border-gray-300 p-2 rounded"
         />
@@ -67,7 +63,7 @@ const Login = () => {
           type="password"
           name="password"
           value={formData.password}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           placeholder="Password"
           className="border border-gray-300 p-2 rounded"
         />

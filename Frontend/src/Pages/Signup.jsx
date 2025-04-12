@@ -61,7 +61,7 @@ const Signup = () => {
           type="text"
           name="name"
           value={formData.name}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           placeholder="Name"
           className="border border-gray-300 p-2 rounded"
         />
@@ -69,7 +69,7 @@ const Signup = () => {
           type="email"
           name="email"
           value={formData.email}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           placeholder="Email"
           className="border border-gray-300 p-2 rounded"
         />
@@ -77,7 +77,7 @@ const Signup = () => {
           type="password"
           name="password"
           value={formData.password}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
           placeholder="Password"
           className="border border-gray-300 p-2 rounded"
         />
