@@ -43,7 +43,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 left-0 right-0 bg-white flex justify-between items-center p-4 border-b-2 border-gray-200">
+    <nav className="sticky top-0 left-0 right-0 h-[12vh] bg-white flex justify-between items-center p-4 border-b-2 border-gray-200">
       <NavLink to="/">
         <div className="flex gap-2 items-center">
           <img

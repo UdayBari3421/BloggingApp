@@ -9,7 +9,7 @@ import axios from "axios";
 
 const GenrePickerBar = () => {
   const { genreId } = useParams();
-  const { genres } = genreSelector();
+  const { genres, loading } = genreSelector();
 
   const genreOptions = genres;
   const dispatch = useDispatch();
@@ -37,32 +37,34 @@ const GenrePickerBar = () => {
   }, []);
 
   return (
-    <div className="p-4 border-b-2 flex-wrap gap-4 border-gray-200 bg-white w-full flex justify-evenly items-center">
-      <Link
-        to="/"
-        className="flex flex-col items-center justify-center">
-        <h3
-          className={`font-bold text-xs px-2 py-1 flex items-center justify-center text-black rounded-2xl ${
-            !genreId ? "bg-gray-600 text-white" : "bg-gray-300"
-          }`}>
-          ALL
-        </h3>
-      </Link>
-      {genreOptions &&
-        genreOptions.map((genre, index) => (
-          <Link
-            to={`/genre/${genre.genre}`}
-            className="flex flex-col items-center justify-center"
-            key={index}>
-            <h3
-              className={`font-bold text-xs px-2 py-1 flex items-center justify-center text-black rounded-2xl ${
-                genreId === genre.genre ? "bg-gray-600 text-white" : "bg-gray-300"
-              }`}>
-              {genre.genre.toUpperCase()}
-            </h3>
-          </Link>
-        ))}
-    </div>
+    <>
+      {!loading ? (
+        <>
+          {genreOptions.length > 0 && !loading && (
+            <div className="p-4 border-b-2 flex-wrap gap-4 border-gray-200 bg-white w-full flex justify-evenly items-center">
+              {genreOptions.map((genre, index) => (
+                <Link
+                  to={`/genre/${genre.genre}`}
+                  className="flex flex-col items-center justify-center"
+                  key={index}>
+                  <h3
+                    className={`font-bold text-xs px-2 py-1 flex items-center justify-center text-black rounded-2xl ${
+                      genreId === genre.genre ? "bg-gray-600 text-white" : "bg-gray-300"
+                    }`}>
+                    {genre.genre.toUpperCase()}
+                  </h3>
+                </Link>
+              ))}
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-8">
+          <span className="animate-spin border-2 border-gray-400 border-r-blue-500 rounded-full p-3 mb-2"></span>
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      )}
+    </>
   );
 };
 
