@@ -20,10 +20,6 @@ const Signup = () => {
     gender: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
   const handleSignUp = async (e) => {
     try {
       e.preventDefault();
