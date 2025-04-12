@@ -10,8 +10,19 @@ connectDb();
 
 const app = express();
 
+const corsOptions = {
+  origin: [
+    "https://blogging-app-frontend-jet.vercel.app",
+    process.env.FRONTEND_URL,
+    "http://localhost:5176",
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "token"],
+};
+
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -19,6 +30,8 @@ app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/genre", genreRouter);
+
+app.options("*", cors(corsOptions));
 
 app.get("/", (_, res) => {
   res.send("Hello World");
