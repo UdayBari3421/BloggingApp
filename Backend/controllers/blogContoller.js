@@ -6,12 +6,11 @@ import validateBlog from "../utils/blogValidation.js";
 export const createBlog = async (req, res) => {
   try {
     const { title, content, genre, userId } = req.body;
-
     const user = await User.findById(userId);
 
     validateBlog(req.body);
 
-    const newBlog = new blogRouter({
+    const newBlog = new Blog({
       userId,
       title,
       content,
@@ -34,6 +33,7 @@ export const createBlog = async (req, res) => {
       return res.status(201).json({ message: "Blog created successfully", blog, success: true });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: error.message, success: false });
   }
 };
@@ -60,7 +60,11 @@ export const getAllBlogs = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Blogs fetched successfully", success: true, blogs: blogResponse });
+      .json({
+        message: "Blogs fetched successfully",
+        success: true,
+        blogs: blogResponse.reverse(),
+      });
   } catch (error) {
     return res.status(500).json({ message: "Server Error", success: false, error: error.message });
   }

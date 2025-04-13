@@ -4,7 +4,7 @@ import { blogsSelector, genreSelector, userSelector } from "../Store/Selectors";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { backendURL } from "../Store/constants";
-import { pushBlog, setError } from "../Store/BlogSlice";
+import { pushBlog, setError, setLoading } from "../Store/BlogSlice";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -14,7 +14,7 @@ const CreateBlog = () => {
   const { isLoading, error } = blogsSelector();
   const { token } = userSelector();
 
-  const genreOptions = genreSelector().genre;
+  const genreOptions = genreSelector()?.genres;
 
   const handleCreateBlog = async (e) => {
     e.preventDefault();
@@ -41,7 +41,6 @@ const CreateBlog = () => {
         dispatch(pushBlog(response.data.blog));
         e.target.reset();
         toast.success("Blog created successfully");
-        navigate("/");
       } else {
         setError(response.data.message);
       }
@@ -51,7 +50,9 @@ const CreateBlog = () => {
       } else {
         toast.error("Something went wrong");
       }
-      navigate("/login");
+    } finally {
+      setLoading(false);
+      navigate("/");
     }
   };
 
@@ -59,11 +60,7 @@ const CreateBlog = () => {
     <div className="max-h-[90vh] h-[90vh] overflow-y-auto flex flex-col items-center justify-center p-4">
       <div className="min-w-[350px] w-6/12 shadow-2xl px-12 py-8 border border-gray-200 rounded-lg bg-white">
         <h1 className="text-2xl pb-3 font-bold text-center">Create New Blog</h1>
-        {error && (
-          <div className="flex justify-center items-center text-red-500 text-lg font-bold mt-4">
-            {error}
-          </div>
-        )}
+
         <hr className="border-gray-100 mb-6 border-b" />
         <form
           onSubmit={handleCreateBlog}
@@ -81,12 +78,11 @@ const CreateBlog = () => {
           <select
             name="genre"
             className="border border-gray-300 rounded p-2 mb-4 w-full">
-            <option value="All">All</option>
             {genreOptions?.map((genre, index) => (
               <option
-                value={genre.id}
+                value={genre.genre}
                 key={index}>
-                {genre.title.toUpperCase()}
+                {genre.genre.charAt(0).toUpperCase() + genre.genre.slice(1)}
               </option>
             ))}
           </select>
