@@ -1,21 +1,20 @@
 import { useState } from "react";
 import axios from "axios";
-import { Button } from "../Components";
-import { userSelector } from "../Store/Selectors";
-import { backendURL } from "../Store/constants.js";
-import { useDispatch } from "react-redux";
-import { setError, setLoading, setUser } from "../Store/UserSlice";
+import { Button } from "../components";
+import { userSelector } from "../store/selectors.js";
+import { backendUrl } from "../store/constants.js";
+import { useDispatch, useSelector } from "react-redux";
+import { setError, setLoading, setUser } from "../features/userSlice.jsx";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 const Login = () => {
-  const { error, isLoading } = userSelector();
+  const { error, isLoading, isLoggedIn } = useSelector(userSelector);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [loginError, setLoginError] = useState(null);
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -23,12 +22,12 @@ const Login = () => {
     e.preventDefault();
     try {
       dispatch(setLoading(true));
-      const response = await axios.post(`${backendURL}/api/user/login`, formData);
+      const response = await axios.post(`${backendUrl}/api/admin/login`, formData);
       if (response.data.success) {
         const userData = {
           user: response.data.user,
           token: response.data.token,
-          isAuthenticated: true,
+          isLoggedIn: true,
         };
         dispatch(setUser(userData));
         localStorage.setItem("token", response.data.token);
@@ -53,10 +52,10 @@ const Login = () => {
         <hr className="border-gray-300 mb-4 border-b" />
         {(error || loginError) && <p className="text-red-500 text-center">{error || loginError}</p>}
         <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          type="text"
+          name="username"
+          value={formData.username}
+          onChange={(e) => setFormData({ ...formData, username: e.target.value })}
           placeholder="Email"
           className="border border-gray-300 p-2 rounded"
         />

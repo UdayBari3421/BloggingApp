@@ -5,17 +5,13 @@ import blogRouter from "./routes/blogRoutes.js";
 import commentRouter from "./routes/commentRoutes.js";
 import genreRouter from "./routes/genreRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import adminRouter from "./routes/adminRoutes.js";
 import { connectDb } from "./config/connection.js";
 connectDb();
 
 const app = express();
 
 const corsOptions = {
-  origin: [
-    "https://blogging-app-frontend-jet.vercel.app",
-    process.env.FRONTEND_URL,
-    "http://localhost:5176",
-  ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "token"],
@@ -27,6 +23,7 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", userRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api/comment", commentRouter);
 app.use("/api/genre", genreRouter);

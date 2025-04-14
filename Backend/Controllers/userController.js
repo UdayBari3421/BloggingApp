@@ -1,13 +1,8 @@
 import bcrypt from "bcrypt";
 import User from "../models/userModel.js";
-import {
-  emailValid,
-  passwordValid,
-  nameValid,
-  genderValid,
-  createToken,
-} from "../utils/userValidation.js";
+import { emailValid, passwordValid, nameValid, genderValid } from "../utils/userValidation.js";
 import Token from "../models/tokenModel.js";
+import { createToken, stroreToken } from "../utils/token.js";
 
 export const registerController = async (req, res) => {
   try {
@@ -71,36 +66,5 @@ export const logoutController = async (req, res) => {
     return res.status(200).json({ message: "Logout Successful", success: true });
   } catch (error) {
     return res.status(500).json({ message: error.message, success: false });
-  }
-};
-
-const stroreToken = async (user, token, res) => {
-  try {
-    const existing = await Token.findOneAndDelete({ userId: user._id });
-
-    if (!existing) {
-      await Token.create(
-        new Token({
-          userId: user._id,
-          token,
-        })
-      );
-    }
-
-    return res.status(200).json({
-      message: "Login Successful",
-      success: true,
-      token,
-      user: {
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        email: user.email,
-        _id: user._id,
-        gender: user.gender,
-        name: user.name,
-      },
-    });
-  } catch (error) {
-    return res.status(200).json({ message: error.message, success: false });
   }
 };
