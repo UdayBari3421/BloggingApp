@@ -9,10 +9,7 @@ import axios from "axios";
 
 const GenrePickerBar = () => {
   const { genreId } = useParams();
-  const path = window.location.pathname;
   const { genres, loading } = genreSelector();
-
-  const genreOptions = genres;
   const dispatch = useDispatch();
 
   const getGenres = async () => {
@@ -36,43 +33,42 @@ const GenrePickerBar = () => {
   useEffect(() => {
     getGenres();
   }, []);
+  let isSelected;
+  useEffect(() => {
+    if (genreId) {
+      const currentGenre = genreId.toLowerCase();
+      isSelected =
+        currentGenre === "all" ? !genreId || genreId === "all" : genreId === currentGenre;
+    } else {
+      isSelected = false;
+    }
+  }, [genreId, isSelected]);
 
   return (
     <>
       {!loading ? (
         <>
-          {genreOptions.length > 0 && !loading && (
+          {genres.length > 0 && (
             <div className="p-4 border-b-2 flex-wrap gap-4 border-gray-200 bg-white w-full flex justify-evenly items-center">
-              {genreOptions.map((genre, index) => {
-                if (genre.genre.toLowerCase() === "all") {
-                  return (
-                    <Link
-                      to={`/`}
-                      className="flex flex-col items-center justify-center"
-                      key={index}>
-                      <h3
-                        className={`font-bold text-xs px-2 py-1 flex items-center justify-center text-black rounded-2xl ${
-                          path === `/` ? "bg-gray-600 text-white" : "bg-gray-300"
-                        }`}>
-                        {genre.genre.toUpperCase()}
-                      </h3>
-                    </Link>
-                  );
-                } else {
-                  return (
-                    <Link
-                      to={`/genre/${genre.genre}`}
-                      className="flex flex-col items-center justify-center"
-                      key={index}>
-                      <h3
-                        className={`font-bold text-xs px-2 py-1 flex items-center justify-center text-black rounded-2xl ${
-                          genreId === genre.genre ? "bg-gray-600 text-white" : "bg-gray-300"
-                        }`}>
-                        {genre.genre.toUpperCase()}
-                      </h3>
-                    </Link>
-                  );
-                }
+              {genres.map((genre, index) => {
+                const currentGenre = genre.genre.toLowerCase();
+
+                isSelected =
+                  currentGenre === "all" ? !genreId || genreId === "all" : genreId === currentGenre;
+
+                return (
+                  <Link
+                    to={`/genre/${currentGenre}`}
+                    className="flex flex-col items-center justify-center"
+                    key={index}>
+                    <h3
+                      className={`font-bold text-xs px-2 py-1 flex items-center justify-center text-black rounded-2xl ${
+                        isSelected ? "bg-gray-600 text-white" : "bg-gray-300"
+                      }`}>
+                      {genre.genre.toUpperCase()}
+                    </h3>
+                  </Link>
+                );
               })}
             </div>
           )}

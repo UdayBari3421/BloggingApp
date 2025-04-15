@@ -42,12 +42,19 @@ const Home = () => {
   }, []);
 
   const filteredBlogs = genreId
-    ? blogs.filter((blog) => blog.genre.toLowerCase() === genreId.toLowerCase())
+    ? blogs.filter((blog) => {
+        if (genreId === "all") {
+          return true;
+        }
+        if (blog.genre === "All") {
+          return false;
+        }
+        return blog.genre.toLowerCase() === genreId.toLowerCase();
+      })
     : blogs;
 
   return (
     <div>
-      <GenrePickerBar />
       <div
         className={`top-10 gap-8 flex flex-col items-center justify-center p-4 ${
           error ? "h-[88vh]" : ""

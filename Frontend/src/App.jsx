@@ -1,6 +1,6 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { Home, Login, Signup, CreateBlog } from "./Pages";
-import { Navbar } from "./Components";
+import { GenrePickerBar, Navbar } from "./Components";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "./Store/UserSlice";
@@ -32,12 +32,7 @@ const App = () => {
   if (isLoggedIn) {
     return (
       <div className="w-full">
-        <Navbar />
         <Routes>
-          <Route
-            path="/"
-            element={<Home />}
-          />
           <Route
             path="/genre/:genreId"
             element={<Home />}
@@ -54,9 +49,14 @@ const App = () => {
   return (
     <div className="w-full">
       <Navbar />
+      <GenrePickerBar />
       <Routes>
         <Route
           path="/"
+          element={<Navigate to={"/genre/"} />}
+        />
+        <Route
+          path="/genre/:genreId"
           element={<Home />}
         />
         <Route
