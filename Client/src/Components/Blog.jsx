@@ -4,8 +4,19 @@ import { getTimeAgo } from "../Store/Constants";
 const Blog = ({ blog }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
+  const setBgColor = () => {
+    switch (blog.sentiment.toLowerCase()) {
+      case "positive":
+        return "bg-green-100 text-green-800";
+      case "negative":
+        return "bg-red-100 text-red-800";
+      case "neutral":
+        return "bg-gray-100 text-gray-800";
+    }
+  };
   return (
-    <div className="min-w-full mx-auto md:w-11/12 lg:min-w-10/12 shadow-2xl px-6 md:px-12 py-8 border border-gray-200 rounded-lg bg-white">
+    <div
+      className={`${blog.sentiment.toLowerCase()} min-w-full mx-auto md:w-11/12 lg:min-w-10/12 shadow-2xl px-6 md:px-12 py-8 border border-gray-200 rounded-lg `}>
       <div className="flex justify-between md:items-center mb-4">
         <span className="md:flex-nowrap flex-wrap flex gap-2 md:items-end">
           <h1 className="text-md sm:text-xl font-semibold">
