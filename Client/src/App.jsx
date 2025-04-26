@@ -80,7 +80,7 @@ const App = () => {
         />
         <Route
           path="/"
-          element={<Navigate to={isAuthenticated ? `/${activeGenrePage}` : "/login"} />}
+          element={<Navigate to={isAuthenticated ? `/all` : "/login"} />}
         />
         <Route
           path="/all"
