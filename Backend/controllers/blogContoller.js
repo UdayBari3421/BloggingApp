@@ -48,7 +48,7 @@ export const createBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find({}, "title content genre userId createdAt");
+    const blogs = await Blog.find({}, "title content genre userId createdAt sentiment");
     if (!blogs.length) {
       return res.status(404).json({ message: "No blogs found", success: false });
     }
