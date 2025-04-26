@@ -1,11 +1,18 @@
 import Blog from "../models/blogModel.js";
 import User from "../models/userModel.js";
-import blogRouter from "../routes/blogRoutes.js";
 import validateBlog from "../utils/blogValidation.js";
+import { getSentiment } from "../utils/sentiment.js";
 
 export const createBlog = async (req, res) => {
   try {
     const { title, content, genre, userId } = req.body;
+
+    const { success, sentiment } = await getSentiment(content);
+    if (!success) {
+      console.log("Failed to fetch sentiment hence adding default sentiment as Neutral");
+    } else {
+      console.log("Sentiment fetched successfully: ", sentiment);
+    }
     const user = await User.findById(userId);
 
     validateBlog(req.body);
@@ -15,6 +22,7 @@ export const createBlog = async (req, res) => {
       title,
       content,
       genre,
+      sentiment,
     });
     await newBlog.save();
 
@@ -54,17 +62,16 @@ export const getAllBlogs = async (req, res) => {
       timestamp: blog.createdAt,
       title: blog.title,
       content: blog.content,
+      sentiment: blog.sentiment,
       genre: blog.genre,
       authorName: userMap[blog.userId] || "Unknown",
     }));
 
-    return res
-      .status(200)
-      .json({
-        message: "Blogs fetched successfully",
-        success: true,
-        blogs: blogResponse.reverse(),
-      });
+    return res.status(200).json({
+      message: "Blogs fetched successfully",
+      success: true,
+      blogs: blogResponse.reverse(),
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server Error", success: false, error: error.message });
   }

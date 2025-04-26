@@ -20,6 +20,11 @@ const blogSchema = new Schema(
       required: true,
       default: "General",
     },
+    sentiment: {
+      type: String,
+      enum: ["Positive", "Negative", "Neutral"],
+      default: "Neutral",
+    },
   },
   { timestamps: true }
 );

@@ -1,47 +1,51 @@
-import { useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { Button } from "../Components";
+import { useDispatch, useSelector } from "react-redux";
 import { userSelector } from "../Store/Selectors";
-import { backendURL } from "../Store/constants.js";
-import { useDispatch } from "react-redux";
-import { setError, setLoading, setUser } from "../Store/UserSlice";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { API_STATUS, backendUrl } from "../Store/Constants";
+import { setLoading, setApiStatus, setUser, setError } from "../Features/UserSlice";
 
 const Login = () => {
-  const { error, isLoading } = userSelector();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const { isLoading, errorMessage } = useSelector(userSelector);
 
-  const [loginError, setLoginError] = useState(null);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  async function handleLogin(e) {
+    dispatch(setLoading(true));
+    dispatch(setApiStatus(API_STATUS.PENDING));
     try {
-      dispatch(setLoading(true));
-      const response = await axios.post(`${backendURL}/api/user/login`, formData);
-      if (response.data.success) {
-        const userData = {
-          user: response.data.user,
-          token: response.data.token,
-          isAuthenticated: true,
-        };
-        dispatch(setUser(userData));
-        localStorage.setItem("token", response.data.token);
+      e.preventDefault();
+
+      if (!formData.email || !formData.password) {
+        dispatch(setApiStatus(API_STATUS.ERROR));
+        dispatch(setError("Please fill in all fields."));
+        return;
+      }
+      const response = await axios.post(backendUrl + "/api/user/login", formData);
+
+      if (response.status >= 200 && response.status < 300) {
+        dispatch(setUser({ user: response.data.user, token: response.data.token }));
+        dispatch(setApiStatus(API_STATUS.SUCCESS));
+
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        setLoginError(null);
-        navigate("/");
+        localStorage.setItem("token", response.data.token);
+      } else {
+        dispatch(setApiStatus(API_STATUS.ERROR));
+        dispatch(setError(response.data.message));
       }
     } catch (error) {
-      setLoginError(error.response?.data?.message || "Login failed");
-      dispatch(setError(error.response?.data?.message || "Login failed"));
+      console.log(error);
+      if (error.response) {
+        dispatch(setApiStatus(API_STATUS.ERROR));
+        dispatch(setError(error.response.data.message));
+      } else {
+        dispatch(setError("Something went wrong!"));
+      }
     } finally {
       dispatch(setLoading(false));
     }
-  };
+  }
 
   return (
     <div className="m-auto min-h-[90vh] flex justify-center items-center">
@@ -50,7 +54,7 @@ const Login = () => {
         className="min-w-[350px] border-gray-300 shadow-2xl p-8 border rounded-2xl flex flex-col justify-between gap-4 w-4/12">
         <h1 className="text-3xl pb-2 font-bold text-center">Login</h1>
         <hr className="border-gray-300 mb-4 border-b" />
-        {(error || loginError) && <p className="text-red-500 text-center">{error || loginError}</p>}
+        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
         <input
           type="email"
           name="email"
@@ -87,4 +91,5 @@ const Login = () => {
     </div>
   );
 };
+
 export default Login;

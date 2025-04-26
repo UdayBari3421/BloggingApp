@@ -29,23 +29,6 @@ const App = () => {
     }
   }, [dispatch]);
 
-  if (isLoggedIn) {
-    return (
-      <div className="w-full">
-        <Routes>
-          <Route
-            path="/genre/:genreId"
-            element={<Home />}
-          />
-          <Route
-            path="/createblog"
-            element={<CreateBlog />}
-          />
-        </Routes>
-      </div>
-    );
-  }
-
   return (
     <div className="w-full">
       <Navbar />
@@ -53,20 +36,30 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={<Navigate to={"/genre/"} />}
+          element={<Navigate to="/genre/all" />}
         />
         <Route
           path="/genre/:genreId"
           element={<Home />}
         />
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-        <Route
-          path="/signup"
-          element={<Signup />}
-        />
+
+        {isLoggedIn ? (
+          <Route
+            path="/createblog"
+            element={<CreateBlog />}
+          />
+        ) : (
+          <>
+            <Route
+              path="/login"
+              element={<Login />}
+            />
+            <Route
+              path="/signup"
+              element={<Signup />}
+            />
+          </>
+        )}
       </Routes>
     </div>
   );

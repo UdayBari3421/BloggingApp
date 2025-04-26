@@ -78,13 +78,18 @@ const CreateBlog = () => {
           <select
             name="genre"
             className="border border-gray-300 rounded p-2 mb-4 w-full">
-            {genreOptions?.map((genre, index) => (
-              <option
-                value={genre.genre}
-                key={index}>
-                {genre.genre.charAt(0).toUpperCase() + genre.genre.slice(1)}
-              </option>
-            ))}
+            {genreOptions?.map(
+              (genre, index) => (
+                console.log(genre._id),
+                (
+                  <option
+                    value={genre._id}
+                    key={index}>
+                    {genre.genre.charAt(0).toUpperCase() + genre.genre.slice(1)}
+                  </option>
+                )
+              )
+            )}
           </select>
           <Button
             disabled={isLoading}

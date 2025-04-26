@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-
+import { Link, useParams, useLocation } from "react-router-dom";
 import { genreSelector } from "../Store/Selectors";
 import { useDispatch } from "react-redux";
 import { setError, setGenres, setLoading } from "../Store/GenreSlice";
@@ -9,8 +8,16 @@ import axios from "axios";
 
 const GenrePickerBar = () => {
   const { genreId } = useParams();
+  const location = useLocation();
   const { genres, loading } = genreSelector();
   const dispatch = useDispatch();
+
+  const pathname = location.pathname;
+  const currentPath = pathname.toLowerCase();
+
+  const urlGenreName = currentPath.split("/genre/")[1];
+
+  const activeGenre = urlGenreName || genreId || "all";
 
   const getGenres = async () => {
     dispatch(setLoading(true));
@@ -18,7 +25,10 @@ const GenrePickerBar = () => {
       const { data } = await axios.get(`${backendURL}/api/genre/getall`);
 
       if (data.success) {
-        dispatch(setGenres(data.genres));
+        const filteredGenres = data.genres.filter((genre) => genre.genre.toLowerCase() !== "all");
+        const genresList = [{ _id: "all", genre: "all" }, ...filteredGenres];
+
+        dispatch(setGenres(genresList));
       } else {
         dispatch(setError("Failed to fetch genres"));
       }
@@ -33,16 +43,6 @@ const GenrePickerBar = () => {
   useEffect(() => {
     getGenres();
   }, []);
-  let isSelected;
-  useEffect(() => {
-    if (genreId) {
-      const currentGenre = genreId.toLowerCase();
-      isSelected =
-        currentGenre === "all" ? !genreId || genreId === "all" : genreId === currentGenre;
-    } else {
-      isSelected = false;
-    }
-  }, [genreId, isSelected]);
 
   return (
     <>
@@ -51,14 +51,11 @@ const GenrePickerBar = () => {
           {genres.length > 0 && (
             <div className="p-4 border-b-2 flex-wrap gap-4 border-gray-200 bg-white w-full flex justify-evenly items-center">
               {genres.map((genre, index) => {
-                const currentGenre = genre.genre.toLowerCase();
-
-                isSelected =
-                  currentGenre === "all" ? !genreId || genreId === "all" : genreId === currentGenre;
-
+                const genreSlug = genre.genre.toLowerCase();
+                const isSelected = genreSlug === activeGenre;
                 return (
                   <Link
-                    to={`/genre/${currentGenre}`}
+                    to={`/genre/${genreSlug}`}
                     className="flex flex-col items-center justify-center"
                     key={index}>
                     <h3
