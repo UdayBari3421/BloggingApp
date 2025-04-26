@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button, Sidebar } from "./index.js";
 import Logo from "../assets/LOGO.png";
-import { genreSelector, userSelector } from "../Store/Selectors.js";
+import { userSelector } from "../Store/Selectors.js";
 import axios from "axios";
 import { backendUrl } from "../Store/Constants.js";
 import { useEffect, useState } from "react";
@@ -16,11 +16,9 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { activeGenrePage } = useSelector(genreSelector);
-
   useEffect(() => {
     if (token) {
-      navigate(`/${activeGenrePage}`);
+      navigate("/$all");
     }
   }, []);
 

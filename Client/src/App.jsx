@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Home, Signup, NotFound } from "./Pages";
-import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { Navbar, GenrePicker, CreateBlogModal } from "./Components";
 import { Login } from "./Pages";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,7 +41,7 @@ const App = () => {
       try {
         dispatch(setUser({ isAuthenticated: true, user: JSON.parse(user), token }));
         if (isAuthenticated) {
-          navigate(`/${activeGenrePage}`);
+          navigate("/all");
         }
       } catch (error) {
         console.log(error);
