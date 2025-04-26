@@ -18,7 +18,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (token) {
-      navigate("/$all");
+      navigate("/all");
     }
   }, []);
 
