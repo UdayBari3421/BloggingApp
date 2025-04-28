@@ -1,19 +1,51 @@
-import React, { useState } from "react";
-import { getTimeAgo } from "../Store/Constants";
+import React, { useEffect } from "react";
+import { backendUrl, getTimeAgo } from "../Store/Constants";
+import { useDispatch, useSelector } from "react-redux";
+import { commentSelector } from "../Store/Selectors";
+import {
+  setComments,
+  setCurrentBlogId,
+  setError,
+  setLoading,
+  setModalOpen,
+} from "../Features/CommentSlice";
+import axios from "axios";
 
 const Blog = ({ blog }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch();
+  const { commentsByBlogId, isLoading } = useSelector(commentSelector);
 
-  const setBgColor = () => {
-    switch (blog.sentiment.toLowerCase()) {
-      case "positive":
-        return "bg-green-100 text-green-800";
-      case "negative":
-        return "bg-red-100 text-red-800";
-      case "neutral":
-        return "bg-gray-100 text-gray-800";
+  const fetchComments = async (blogId) => {
+    dispatch(setLoading(true));
+    try {
+      const response = await axios.get(backendUrl + "/api/comment/getall", {
+        params: { parentId: blogId.toString() },
+      });
+
+      if (response.data.success) {
+        // Store comments in Redux state
+        dispatch(
+          setComments({
+            parentId: blogId,
+            comments: response.data.comments || [],
+          })
+        );
+      } else {
+        dispatch(setError(response.data.message));
+      }
+    } catch (error) {
+      dispatch(setError(error.message));
+    } finally {
+      dispatch(setLoading(false));
     }
   };
+
+  useEffect(() => {
+    if (blog) {
+      fetchComments(blog.blogId);
+    }
+  }, [blog]);
+
   return (
     <div
       className={`${blog.sentiment.toLowerCase()} min-w-full mx-auto md:w-11/12 lg:min-w-10/12 shadow-2xl px-6 md:px-12 py-8 border border-gray-200 rounded-lg `}>
@@ -33,17 +65,14 @@ const Blog = ({ blog }) => {
         <p className="text-sm text-gray-700 ">{blog.content}</p>
       </div>
       <div className="flex justify-end items-center mt-4">
-        {/* <button
-          onClick={() => setModalVisible(true)}
+        <button
+          onClick={() => {
+            dispatch(setCurrentBlogId(blog.blogId));
+            dispatch(setModalOpen(true));
+          }}
           className="text-sm text-gray-500 mt-4 border px-3 rounded-2xl hover:bg-gray-200 py-1 font-semibold flex items-center gap-2">
-          Comments: {totalComments || 0}
+          Comments: {commentsByBlogId[blog.blogId]?.length || 0}
         </button>
-        {modalVisible && (
-          <CommentsModal
-            closeModal={() => setModalVisible(false)}
-            parentId={blog.blogId}
-          />
-        )} */}
       </div>
     </div>
   );

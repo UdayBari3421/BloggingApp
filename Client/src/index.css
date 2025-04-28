@@ -14,10 +14,14 @@ body {
     font-style: normal;
 }
 
-.okbtn {
-    background: black;
-    color: white;
-    width: 100%;
-    margin: auto;
-    display: block;
+.negative {
+    background: hsla(0, 100%, 79%, 0.663);
+}
+
+.positive {
+    background: rgba(46, 217, 46, 0.436)
+}
+
+.neutral {
+    background: #d5eaff;
 }

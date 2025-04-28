@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { Button, Sidebar } from "./index.js";
+import { Button, CreateBlogModal, Sidebar } from "./index.js";
 import Logo from "../assets/LOGO.png";
 import { userSelector } from "../Store/Selectors.js";
 import axios from "axios";
@@ -93,7 +93,7 @@ const Navbar = () => {
                 onClick={() => setVisible((prev) => !prev)}
               />
             </Button>
-
+            <CreateBlogModal />
             {visible && (
               <Sidebar
                 visible={visible}

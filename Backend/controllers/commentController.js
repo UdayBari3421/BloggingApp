@@ -50,7 +50,7 @@ export const addComment = async (req, res) => {
 };
 
 export const getAllComments = async (req, res) => {
-  const { parentId, page = 1, limit = 10 } = req.query;
+  const { parentId } = req.query;
 
   if (!parentId) {
     return res.status(400).json({
@@ -60,13 +60,7 @@ export const getAllComments = async (req, res) => {
   }
 
   try {
-    const skip = (page - 1) * limit;
-
-    const comments = await Comment.find({ parentId })
-      .sort({ createdAt: -1 })
-      .populate("userId")
-      .skip(skip)
-      .limit(Number(limit));
+    const comments = await Comment.find({ parentId }).sort({ createdAt: -1 }).populate("userId");
 
     const total = await Comment.countDocuments({ parentId });
 
@@ -93,12 +87,7 @@ export const getAllComments = async (req, res) => {
       message: "Comments fetched successfully",
       success: true,
       comments: formattedComments,
-      pagination: {
-        total,
-        page: Number(page),
-        limit: Number(limit),
-        totalPages: Math.ceil(total / limit),
-      },
+      total,
     });
   } catch (error) {
     return res.status(500).json({ message: "Server Error", success: false, error: error.message });

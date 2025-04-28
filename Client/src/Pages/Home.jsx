@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { blogSelector, genreSelector } from "../Store/Selectors";
+import { blogSelector, commentSelector, genreSelector } from "../Store/Selectors";
 import { setActiveGenrePage } from "../Features/GenreSlice";
 import { API_STATUS, backendUrl } from "../Store/Constants";
 import { EmptyPage } from "../Pages";
@@ -13,8 +13,10 @@ import {
   setError,
   setFilteredBlogs,
 } from "../Features/BlogSlice";
+
 import { Blog } from "../Components";
 import { Skeleton } from "antd";
+import { setComments, setTotalComments } from "../Features/CommentSlice";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -78,7 +80,7 @@ const Home = () => {
     return <EmptyPage topic={genreId} />;
   }
 
-  if (isLoading || genreLoading) {
+  if (isLoading || genreLoading || apiStatus === API_STATUS.PENDING) {
     let skeletonArr = [];
     skeletonArr.length = 3;
     skeletonArr.fill(0);
@@ -110,7 +112,7 @@ const Home = () => {
   return (
     <div className="top-10 gap-8 flex flex-col items-center justify-center p-4">
       <div className="p-4 w-full flex gap-4 flex-col">
-        {filteredBlogs.map((blog, ind) => (
+        {filteredBlogs.map((blog) => (
           <Blog
             blog={blog}
             key={blog.blogId}

@@ -9,6 +9,7 @@ import { setUser } from "./Features/UserSlice";
 import { setApiStatus, setGenres } from "./Features/GenreSlice";
 import { API_STATUS, backendUrl } from "./Store/Constants";
 import axios from "axios";
+import CommentModal from "./Components/CommentModal";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useSelector(userSelector);
@@ -67,7 +68,7 @@ const App = () => {
   return (
     <div>
       <Navbar />
-      <CreateBlogModal />
+      <CommentModal />
       {isAuthenticated && <GenrePicker genres={genres} />}
       <Routes>
         <Route
