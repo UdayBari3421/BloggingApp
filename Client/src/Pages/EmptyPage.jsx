@@ -11,7 +11,7 @@ const EmptyPage = ({ topic }) => {
         justifyContent: "center",
         height: "60vh",
       }}
-      description={`No blogs found related to "${topic}"`}
+      description={topic ? `No blogs found related to "${topic}"` : "There is no blog created yet"}
     />
   );
 };

@@ -48,7 +48,9 @@ const Blog = ({ blog }) => {
 
   return (
     <div
-      className={`${blog.sentiment.toLowerCase()} min-w-full mx-auto md:w-11/12 lg:min-w-10/12 shadow-2xl px-6 md:px-12 py-8 border border-gray-200 rounded-lg `}>
+      className={`${
+        blog.sentiment ? blog.sentiment.toLowerCase() : "neutral"
+      } min-w-full mx-auto md:w-11/12 lg:min-w-10/12 shadow-2xl px-6 md:px-12 py-8 border border-gray-200 rounded-lg `}>
       <div className="flex justify-between md:items-center mb-4">
         <span className="md:flex-nowrap flex-wrap flex gap-2 md:items-end">
           <h1 className="text-md sm:text-xl font-semibold">

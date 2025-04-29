@@ -44,22 +44,33 @@ const Navbar = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="flex gap-4">
-        <NavLink to="/login">
-          <Button
-            styles={
-              "bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
-            }
-            text="Login"
-          />
+      <nav className="sticky top-0 left-0 right-0 md:h-[12vh] h-[8vh] bg-white flex justify-between items-center px-4 border-b-2 border-gray-200">
+        <NavLink to="/">
+          <div className="flex gap-2 items-center">
+            <img
+              className="w-[50px]"
+              src={Logo}
+            />
+            <h1 className="boldonse text-xl font-bold">BlogApp</h1>
+          </div>
         </NavLink>
-        <NavLink to="/signup">
-          <Button
-            styles="bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
-            text="Signup"
-          />
-        </NavLink>
-      </div>
+        <div className="flex gap-4">
+          <NavLink to="/login">
+            <Button
+              styles={
+                "bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+              }
+              text="Login"
+            />
+          </NavLink>
+          <NavLink to="/signup">
+            <Button
+              styles="bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+              text="Signup"
+            />
+          </NavLink>
+        </div>
+      </nav>
     );
   }
 

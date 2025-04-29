@@ -2,7 +2,7 @@ import { Modal } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { blogSelector, genreSelector, userSelector } from "../Store/Selectors";
-import { addBLog, setBlogs, setModalOpen } from "../Features/BlogSlice";
+import { addBLog, setBlogs, setLoading, setModalOpen } from "../Features/BlogSlice";
 import Button from "./Button";
 import axios from "axios";
 import { backendUrl } from "../Store/Constants";
@@ -17,6 +17,7 @@ const CreateBlogModal = () => {
   const handleCreateBlog = async (e) => {
     e.preventDefault();
     dispatch(setModalOpen(true));
+    dispatch(setLoading(true));
     try {
       const formData = new FormData(e.target);
       const newformData = Object.fromEntries(formData.entries());
@@ -43,6 +44,7 @@ const CreateBlogModal = () => {
       console.error("Error creating blog:", error);
     } finally {
       dispatch(setModalOpen(false));
+      dispatch(setLoading(false));
     }
   };
 

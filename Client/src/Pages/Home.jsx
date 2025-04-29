@@ -16,7 +16,6 @@ import {
 
 import { Blog } from "../Components";
 import { Skeleton } from "antd";
-import { setComments, setTotalComments } from "../Features/CommentSlice";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -76,8 +75,8 @@ const Home = () => {
     fetchBlogs();
   }, []);
 
-  if (apiStatus === API_STATUS.SUCCESS && filteredBlogs.length === 0) {
-    return <EmptyPage topic={genreId} />;
+  if ((apiStatus === API_STATUS.SUCCESS && filteredBlogs.length === 0) || blogs.length === 0) {
+    return <EmptyPage topic={blogs.length !== 0 ? genreId : null} />;
   }
 
   if (isLoading || genreLoading || apiStatus === API_STATUS.PENDING) {
