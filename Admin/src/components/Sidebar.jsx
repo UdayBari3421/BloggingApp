@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Logo from "../assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "./Button";
@@ -7,15 +7,17 @@ import { removeUser } from "../features/userSlice";
 import axios from "axios";
 import { backendUrl } from "../store/constants";
 import { userSelector } from "../store/selectors";
+import { MdMenu } from "react-icons/md";
+import { Modal } from "antd";
 
 const Sidebar = () => {
   const { token, user, isLoading } = useSelector(userSelector);
+  const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      console.log("Logout clicked");
       const response = await axios.post(
         backendUrl + "/api/admin/logout",
         { userId: user._id },
@@ -71,7 +73,16 @@ const Sidebar = () => {
           </ul>
         </div>
       </div>
-      <div className="md:hidden flex"></div>
+      <div className="md:hidden flex p-4 ">
+        <MdMenu
+          className="text-2xl"
+          onClick={() => setModalVisible(true)}
+        />
+        <Modal
+          footer={null}
+          open={modalVisible}
+          onCancel={() => setModalVisible(false)}></Modal>
+      </div>
     </>
   );
 };

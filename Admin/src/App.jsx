@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { userSelector } from "./store/selectors";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { Home, AddGenre, AddAdmin, GetUsers, Login } from "./pages";
 import Sidebar from "./components/Sidebar";
 import { setLoading, setUser } from "./features/userSlice";
@@ -56,10 +56,6 @@ const App = () => {
           path="/get-users"
           element={<GetUsers />}
         />
-        <Route
-          path="/get-users/:id"
-          element={<GetUsers />}
-        />
       </Routes>
     ) : (
       <Routes>
@@ -75,7 +71,7 @@ const App = () => {
     <div className="flex flex-col max-h-screen h-screen w-screen bg-gray-100">
       <div className="flex">
         {isLoggedIn && <Sidebar user={user} />}
-        {!isLoading ? (
+        {isLoggedIn && !isLoading ? (
           <PrivateRoutes />
         ) : (
           <div className="absolute top-0 bottom-0 w-full h-screen bg-white flex font-bold items-center justify-center gap-2">

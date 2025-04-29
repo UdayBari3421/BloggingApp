@@ -42,8 +42,29 @@ const Navbar = () => {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="flex gap-4">
+        <NavLink to="/login">
+          <Button
+            styles={
+              "bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+            }
+            text="Login"
+          />
+        </NavLink>
+        <NavLink to="/signup">
+          <Button
+            styles="bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+            text="Signup"
+          />
+        </NavLink>
+      </div>
+    );
+  }
+
   return (
-    <nav className="sticky top-0 left-0 right-0 h-[12vh] bg-white flex justify-between items-center p-4 border-b-2 border-gray-200">
+    <nav className="sticky top-0 left-0 right-0 md:h-[12vh] h-[8vh] bg-white flex justify-between items-center px-4 border-b-2 border-gray-200">
       <NavLink to="/">
         <div className="flex gap-2 items-center">
           <img
@@ -53,57 +74,37 @@ const Navbar = () => {
           <h1 className="boldonse text-xl font-bold">BlogApp</h1>
         </div>
       </NavLink>
-      {!isAuthenticated ? (
-        <div className="flex gap-4">
-          <NavLink to="/login">
-            <Button
-              styles={
-                "bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
-              }
-              text="Login"
-            />
-          </NavLink>
-          <NavLink to="/signup">
-            <Button
-              styles="bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
-              text="Signup"
-            />
-          </NavLink>
-        </div>
-      ) : (
-        <>
-          <div className="md:flex gap-4 hidden">
-            <Button
-              onClickHandler={handleLogout}
-              styles="bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
-              text="Logout"
-            />
 
-            <Button
-              onClickHandler={() => dispatch(setModalOpen(true))}
-              styles="bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
-              text="Create Blog"
-            />
-          </div>
+      <div className="md:flex gap-4 hidden">
+        <Button
+          onClickHandler={handleLogout}
+          styles="bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+          text="Logout"
+        />
 
-          <div className="md:hidden flex gap-4">
-            <Button className="text-3xl">
-              <HiMenu
-                className="text-3xl"
-                onClick={() => setVisible((prev) => !prev)}
-              />
-            </Button>
-            <CreateBlogModal />
-            {visible && (
-              <Sidebar
-                visible={visible}
-                setVisible={setVisible}
-                handleLogout={handleLogout}
-              />
-            )}
-          </div>
-        </>
-      )}
+        <Button
+          onClickHandler={() => dispatch(setModalOpen(true))}
+          styles="bg-black text-white px-8 py-1.5 rounded-full hover:outline hover:bg-white hover:text-black"
+          text="Create Blog"
+        />
+      </div>
+
+      <div className="md:hidden flex gap-4">
+        <Button className="text-3xl">
+          <HiMenu
+            className="text-3xl"
+            onClick={() => setVisible((prev) => !prev)}
+          />
+        </Button>
+        <CreateBlogModal />
+        {visible && (
+          <Sidebar
+            visible={visible}
+            setVisible={setVisible}
+            handleLogout={handleLogout}
+          />
+        )}
+      </div>
     </nav>
   );
 };
